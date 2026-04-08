@@ -10,12 +10,22 @@ import SwiftUI
 
 struct TimelineWidgetProvider: TimelineProvider {
     func placeholder(in context: Context) -> TimelineWidgetEntry {
-        TimelineWidgetEntry(date: .now, appearance: .defaultAppearance(), updateIndex: 0)
+        TimelineWidgetEntry(
+            date: .now,
+            appearance: .defaultAppearance(),
+            updateIndex: 0
+        )
     }
 
     func getSnapshot(in context: Context, completion: @escaping (TimelineWidgetEntry) -> Void) {
         let appearance = WidgetDataStore.shared.load(for: .timelineWidget)
-        completion(TimelineWidgetEntry(date: .now, appearance: appearance, updateIndex: 0))
+        completion(
+            TimelineWidgetEntry(
+                date: .now,
+                appearance: appearance,
+                updateIndex: 0
+            )
+        )
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<TimelineWidgetEntry>) -> Void) {

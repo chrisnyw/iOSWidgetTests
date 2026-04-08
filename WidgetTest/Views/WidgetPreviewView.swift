@@ -17,6 +17,14 @@ struct WidgetPreviewView: View {
         Group {
             if family.isAccessory {
                 accessoryPreview
+            } else if viewModel.feature == .photoWidget {
+                photoContent
+                    .frame(
+                        width: family.previewSize.width,
+                        height: family.previewSize.height
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 22))
+                    .shadow(color: .black.opacity(0.15), radius: 10, y: 5)
             } else {
                 widgetContent
                     .foregroundStyle(Color(hex: appearance.textColorHex))
@@ -25,7 +33,7 @@ struct WidgetPreviewView: View {
                         height: family.previewSize.height
                     )
                     .background(
-                        Color(hex: appearance.backgroundColorHex),
+                        widgetBackgroundStyle,
                         in: RoundedRectangle(cornerRadius: 22)
                     )
                     .shadow(color: .black.opacity(0.15), radius: 10, y: 5)
@@ -60,6 +68,8 @@ struct WidgetPreviewView: View {
             EmptyView()
         case .animatedWidget:
             AnimatedContentView(appearance: appearance, value: viewModel.animatedValue, date: .now)
+        case .photoWidget:
+            photoContent
         }
     }
 
@@ -106,6 +116,16 @@ struct WidgetPreviewView: View {
         }
     }
 
+    // MARK: - Photo Widget
+
+    private var photoContent: some View {
+        PhotoContentView(
+            title: appearance.title,
+            date: .now,
+            imageData: viewModel.photoData
+        )
+    }
+
     // MARK: - Deep Link Widget
 
     private var deepLinkContent: some View {
@@ -149,6 +169,27 @@ struct WidgetPreviewView: View {
             .background(.ultraThinMaterial, in: Capsule())
         default:
             EmptyView()
+        }
+    }
+}
+
+// MARK: - Helpers
+
+private extension WidgetPreviewView {
+    var widgetBackgroundStyle: AnyShapeStyle {
+        if viewModel.feature == .animatedWidget {
+            AnyShapeStyle(
+                LinearGradient(
+                    colors: [
+                        Color.fromString(String(viewModel.animatedValue)),
+                        Color.fromString(String(viewModel.animatedValue) + ".end")
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+        } else {
+            AnyShapeStyle(Color(hex: appearance.backgroundColorHex))
         }
     }
 }

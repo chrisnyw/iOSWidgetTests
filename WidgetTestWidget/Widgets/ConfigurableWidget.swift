@@ -72,8 +72,11 @@ enum ConfigWidgetColor: String, AppEnum {
 struct ConfigurableWidgetProvider: AppIntentTimelineProvider {
     func placeholder(in context: Context) -> ConfigurableEntry {
         ConfigurableEntry(
-            date: .now, style: .standard, showDate: true,
-            accentColor: .blue, appearance: .defaultAppearance()
+            date: .now,
+            style: .standard,
+            showDate: true,
+            accentColor: .blue,
+            appearance: .defaultAppearance()
         )
     }
 

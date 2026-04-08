@@ -6,34 +6,32 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 struct WidgetFeatureDetailView: View {
     @Bindable var viewModel: WidgetFeatureDetailViewModel
 
     var body: some View {
-//        VStack {
-            ScrollView {
-                VStack(spacing: 24) {
-                    previewSection
-                    familyPicker
-                    featureControlsSection
-                    if viewModel.feature.controls.textSection { textSection }
-                    if viewModel.feature.controls.appearanceSection { appearanceSection }
-                    if viewModel.feature.controls.iconPicker { iconPicker }
-                    descriptionSection
-                    addWidgetButton
-                }
+        ScrollView {
+            VStack(spacing: 24) {
+                previewSection
+                familyPicker
+                featureControlsSection
+                if viewModel.feature.controls.textSection { textSection }
+                if viewModel.feature.controls.appearanceSection { appearanceSection }
+                if viewModel.feature.controls.iconPicker { iconPicker }
+                descriptionSection
+                addWidgetButton
             }
-            .overlay(alignment: .top) {
-                LinearGradient(
-                    colors: [.clear, Color(.systemBackground)],
-                    startPoint: .bottom,
-                    endPoint: .top
-                )
-                .frame(height: 12)
+            .padding()
+        }
+        .mask {
+            VStack(spacing: 0) {
+                LinearGradient(colors: [.clear, .black], startPoint: .top, endPoint: .bottom)
+                    .frame(height: 12)
+                Color.black
             }
-//        }
-        .padding()
+        }
         .navigationTitle(viewModel.feature.title)
         .navigationBarTitleDisplayMode(.inline)
         .onChange(of: viewModel.appearance) {
@@ -86,6 +84,8 @@ struct WidgetFeatureDetailView: View {
             configurableControls
         case .animatedWidget:
             animatedControls
+        case .photoWidget:
+            photoControls
         default:
             EmptyView()
         }
@@ -175,6 +175,50 @@ struct WidgetFeatureDetailView: View {
                     .frame(maxWidth: .infinity)
                     .padding()
                     .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
+            }
+        }
+    }
+
+    private var photoControls: some View {
+        VStack(spacing: 12) {
+            Text("Photo")
+                .font(.headline)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            PhotosPicker(
+                selection: $viewModel.selectedPhotoItem,
+                matching: .images
+            ) {
+                HStack {
+                    Label(
+                        viewModel.photoData == nil ? "Select Photo" : "Change Photo",
+                        systemImage: "photo.on.rectangle"
+                    )
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                .padding()
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 12))
+            }
+            .buttonStyle(.plain)
+            .onChange(of: viewModel.selectedPhotoItem) {
+                Task { await viewModel.loadSelectedPhoto() }
+            }
+
+            if viewModel.photoData != nil {
+                Button(role: .destructive) {
+                    viewModel.removePhoto()
+                } label: {
+                    Label("Remove Photo", systemImage: "trash")
+                        .font(.headline)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(.red, in: RoundedRectangle(cornerRadius: 14))
+                        .foregroundStyle(.white)
+                }
+                .buttonStyle(.plain)
             }
         }
     }

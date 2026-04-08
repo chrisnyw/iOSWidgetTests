@@ -34,4 +34,15 @@ extension Color {
         uiColor.getRed(&r, green: &g, blue: &b, alpha: nil)
         return String(format: "#%02X%02X%02X", Int(r * 255), Int(g * 255), Int(b * 255))
     }
+
+    static func fromString(_ string: String) -> Color {
+        var hash: UInt64 = 5381
+        for byte in string.utf8 {
+            hash = hash &* 33 &+ UInt64(byte)
+        }
+        let hue = Double(hash % 360) / 360.0
+        let saturation = 0.6 + Double((hash >> 8) % 30) / 100.0
+        let brightness = 0.7 + Double((hash >> 16) % 25) / 100.0
+        return Color(hue: hue, saturation: saturation, brightness: brightness)
+    }
 }

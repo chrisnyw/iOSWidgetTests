@@ -18,5 +18,6 @@ struct WidgetTestWidgetBundle: WidgetBundle {
         DeepLinkWidget()
         LockScreenWidget()
         AnimatedWidget()
+        PhotoWidget()
     }
 }

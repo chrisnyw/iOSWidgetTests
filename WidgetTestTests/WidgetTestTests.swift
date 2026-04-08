@@ -81,6 +81,13 @@ struct WidgetFeatureTests {
         #expect(staticWidget.textSection)
         #expect(staticWidget.appearanceSection)
         #expect(staticWidget.iconPicker)
+
+        // Photo widget should only show title, no appearance/icon
+        let photo = WidgetFeature.photoWidget.controls
+        #expect(photo.title)
+        #expect(!photo.subtitleField)
+        #expect(!photo.backgroundColor)
+        #expect(!photo.iconPicker)
     }
 }
 

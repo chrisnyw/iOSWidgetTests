@@ -33,7 +33,7 @@ struct LockScreenEntry: TimelineEntry {
 // MARK: - Views
 
 struct LockScreenWidgetEntryView: View {
-    @Environment(\.widgetFamily) var family
+    @Environment(\.widgetFamily) private var family
     let entry: LockScreenEntry
 
     var body: some View {

@@ -68,6 +68,7 @@
 				Shared/AnimatedContentView.swift,
 				Shared/ConfigurableContentView.swift,
 				Shared/DeepLinkContentViews.swift,
+				Shared/PhotoContentView.swift,
 				Shared/StaticContentView.swift,
 				Shared/TimelineContentView.swift,
 				Shared/WidgetConstants.swift,

@@ -15,6 +15,7 @@ enum WidgetFeature: String, CaseIterable, Identifiable, Hashable, Sendable {
     case deepLinkWidget
     case lockScreenWidget
     case animatedWidget
+    case photoWidget
 
     var id: String { rawValue }
 
@@ -27,6 +28,7 @@ enum WidgetFeature: String, CaseIterable, Identifiable, Hashable, Sendable {
         case .deepLinkWidget: "Deep Link Widget"
         case .lockScreenWidget: "Lock Screen Widget"
         case .animatedWidget: "Animated Widget"
+        case .photoWidget: "Photo Widget"
         }
     }
 
@@ -39,6 +41,7 @@ enum WidgetFeature: String, CaseIterable, Identifiable, Hashable, Sendable {
         case .deepLinkWidget: "Navigate to specific app screens"
         case .lockScreenWidget: "Accessory family widgets"
         case .animatedWidget: "Content transition animations"
+        case .photoWidget: "Photo background with time overlay"
         }
     }
 
@@ -51,6 +54,7 @@ enum WidgetFeature: String, CaseIterable, Identifiable, Hashable, Sendable {
         case .deepLinkWidget: "link"
         case .lockScreenWidget: "lock.rectangle.on.rectangle"
         case .animatedWidget: "wand.and.stars"
+        case .photoWidget: "photo.fill"
         }
     }
 
@@ -63,6 +67,7 @@ enum WidgetFeature: String, CaseIterable, Identifiable, Hashable, Sendable {
         case .deepLinkWidget: .red
         case .lockScreenWidget: .indigo
         case .animatedWidget: .pink
+        case .photoWidget: .teal
         }
     }
 
@@ -75,6 +80,7 @@ enum WidgetFeature: String, CaseIterable, Identifiable, Hashable, Sendable {
         case .deepLinkWidget: "DeepLinkWidget"
         case .lockScreenWidget: "LockScreenWidget"
         case .animatedWidget: "AnimatedWidget"
+        case .photoWidget: "PhotoWidget"
         }
     }
 
@@ -98,6 +104,8 @@ enum WidgetFeature: String, CaseIterable, Identifiable, Hashable, Sendable {
             "Tests accessory widget families for the Lock Screen and StandBy: accessoryCircular, accessoryRectangular, and accessoryInline."
         case .animatedWidget:
             "Tests content transition animations in widgets. The widget animates between timeline entries using numericText and other transition styles."
+        case .photoWidget:
+            "Tests photo-based widgets. Select a photo from your album to display as the widget background with a live time and title overlay. Photo is shared via the App Group container."
         }
     }
 
@@ -105,7 +113,7 @@ enum WidgetFeature: String, CaseIterable, Identifiable, Hashable, Sendable {
 
     var supportedFamilies: [WidgetFamilyOption] {
         switch self {
-        case .staticWidget, .deepLinkWidget:
+        case .staticWidget, .deepLinkWidget, .photoWidget:
             [.small, .medium, .large]
         case .timelineWidget, .configurableWidget, .interactiveWidget, .animatedWidget:
             [.small, .medium]
@@ -145,7 +153,9 @@ enum WidgetFeature: String, CaseIterable, Identifiable, Hashable, Sendable {
         case .lockScreenWidget:
             ControlVisibility(title: true, subtitleField: true, subtitleToggle: true, backgroundColor: false, textColor: false, showIcon: false, fontSize: false, iconPicker: true)
         case .animatedWidget:
-            ControlVisibility(title: true, subtitleField: false, subtitleToggle: true, backgroundColor: true, textColor: true, showIcon: true, fontSize: true, iconPicker: true)
+            ControlVisibility(title: true, subtitleField: false, subtitleToggle: true, backgroundColor: false, textColor: true, showIcon: true, fontSize: true, iconPicker: true)
+        case .photoWidget:
+            ControlVisibility(title: true, subtitleField: false, subtitleToggle: false, backgroundColor: false, textColor: false, showIcon: false, fontSize: false, iconPicker: false)
         }
     }
 }

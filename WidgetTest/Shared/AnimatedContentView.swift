@@ -17,7 +17,6 @@ struct AnimatedContentView: View {
             if appearance.showIcon {
                 Image(systemName: appearance.iconName)
                     .font(.largeTitle)
-                    .symbolEffect(.pulse)
             }
             Text("\(value)")
                 .font(.system(size: appearance.fontSize * 2, weight: .bold, design: .rounded))

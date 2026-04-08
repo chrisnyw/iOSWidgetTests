@@ -6,8 +6,10 @@
 //
 
 import SwiftUI
+import PhotosUI
 
 @Observable
+@MainActor
 final class WidgetFeatureDetailViewModel {
     let feature: WidgetFeature
     var appearance: WidgetAppearance
@@ -26,6 +28,10 @@ final class WidgetFeatureDetailViewModel {
     // Animated widget state
     var animatedValue: Int = 42
 
+    // Photo widget state
+    var selectedPhotoItem: PhotosPickerItem?
+    var photoData: Data?
+
     private let store: WidgetDataStoring
 
     init(feature: WidgetFeature, store: WidgetDataStoring = WidgetDataStore.shared) {
@@ -34,6 +40,7 @@ final class WidgetFeatureDetailViewModel {
         self.appearance = store.load(for: feature)
         self.counterValue = store.counter()
         self.isToggled = store.toggleState()
+        self.photoData = store.loadPhoto(for: feature)
 
         if feature == .lockScreenWidget {
             selectedFamily = .accessoryCircular
@@ -69,5 +76,57 @@ final class WidgetFeatureDetailViewModel {
 
     func randomizeAnimatedValue() {
         animatedValue = Int.random(in: 0...999)
+    }
+
+    func loadSelectedPhoto() async {
+        guard let item = selectedPhotoItem else {
+            print("❌ [Photo] No photo item selected")
+            return
+        }
+        do {
+            guard let data = try await item.loadTransferable(type: Data.self) else {
+                print("❌ [Photo] loadTransferable returned nil")
+                return
+            }
+            print("✅ [Photo] Loaded raw data: \(data.count) bytes")
+            guard let compressed = Self.compressForWidget(data) else {
+                print("❌ [Photo] compressForWidget failed")
+                return
+            }
+            print("✅ [Photo] Compressed: \(compressed.count) bytes")
+            photoData = compressed
+            store.savePhoto(compressed, for: feature)
+            save()
+            print("✅ [Photo] Saved to store and triggered widget reload")
+        } catch {
+            print("❌ [Photo] loadTransferable error: \(error)")
+        }
+    }
+
+    func removePhoto() {
+        photoData = nil
+        selectedPhotoItem = nil
+        store.removePhoto(for: feature)
+        save()
+    }
+
+    private static func compressForWidget(_ data: Data) -> Data? {
+        guard let image = UIImage(data: data) else { return nil }
+        // Widget archival fails if total pixel area exceeds ~1M pixels.
+        // Use pixel dimensions (points × scale) to calculate the actual area.
+        let pixelWidth = image.size.width * image.scale
+        let pixelHeight = image.size.height * image.scale
+        let maxPixelArea: CGFloat = 1_000_000
+        let currentArea = pixelWidth * pixelHeight
+        let scale = currentArea > maxPixelArea ? sqrt(maxPixelArea / currentArea) : 1
+        if scale < 1 {
+            let newSize = CGSize(width: pixelWidth * scale, height: pixelHeight * scale)
+            let format = UIGraphicsImageRendererFormat()
+            format.scale = 1.0
+            let renderer = UIGraphicsImageRenderer(size: newSize, format: format)
+            let resized = renderer.image { _ in image.draw(in: CGRect(origin: .zero, size: newSize)) }
+            return resized.jpegData(compressionQuality: 0.7)
+        }
+        return image.jpegData(compressionQuality: 0.7)
     }
 }

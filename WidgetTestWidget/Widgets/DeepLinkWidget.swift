@@ -33,7 +33,7 @@ struct DeepLinkEntry: TimelineEntry {
 // MARK: - Views
 
 struct DeepLinkWidgetView: View {
-    @Environment(\.widgetFamily) var family
+    @Environment(\.widgetFamily) private var family
     let entry: DeepLinkEntry
 
     private let features = Array(WidgetFeature.allCases.prefix(4))

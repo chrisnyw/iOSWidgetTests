@@ -24,7 +24,7 @@ struct AnimatedWidgetProvider: TimelineProvider {
         var entries: [AnimatedEntry] = []
         let now = Date.now
 
-        for i in 0..<30 {
+        for i in 0..<10 {
             let date = Calendar.current.date(byAdding: .second, value: i * 10, to: now)!
             entries.append(AnimatedEntry(date: date, value: Int.random(in: 0...999), appearance: appearance))
         }
@@ -48,7 +48,16 @@ struct AnimatedWidgetView: View {
         AnimatedContentView(appearance: entry.appearance, value: entry.value, date: entry.date)
             .foregroundStyle(Color(hex: entry.appearance.textColorHex))
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .containerBackground(Color(hex: entry.appearance.backgroundColorHex), for: .widget)
+            .containerBackground(for: .widget) {
+                LinearGradient(
+                    colors: [
+                        Color.fromString(String(entry.value)),
+                        Color.fromString(String(entry.value) + ".end")
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            }
     }
 }
 

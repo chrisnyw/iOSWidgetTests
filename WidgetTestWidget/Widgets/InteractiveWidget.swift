@@ -77,7 +77,7 @@ struct InteractiveEntry: TimelineEntry {
 // MARK: - Views
 
 struct InteractiveWidgetView: View {
-    @Environment(\.widgetFamily) var family
+    @Environment(\.widgetFamily) private var family
     let entry: InteractiveEntry
 
     var body: some View {
