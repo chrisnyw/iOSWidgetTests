@@ -34,13 +34,13 @@ final class WidgetFeatureDetailViewModel {
 
     private let store: WidgetDataStoring
 
-    init(feature: WidgetFeature, store: WidgetDataStoring = WidgetDataStore.shared) {
+    init(feature: WidgetFeature, store: WidgetDataStoring? = nil) {
         self.feature = feature
-        self.store = store
-        self.appearance = store.load(for: feature)
-        self.counterValue = store.counter()
-        self.isToggled = store.toggleState()
-        self.photoData = store.loadPhoto(for: feature)
+        self.store = store ?? WidgetDataStore.shared
+        self.appearance = self.store.load(for: feature)
+        self.counterValue = self.store.counter()
+        self.isToggled = self.store.toggleState()
+        self.photoData = self.store.loadPhoto(for: feature)
 
         if feature == .lockScreenWidget {
             selectedFamily = .accessoryCircular

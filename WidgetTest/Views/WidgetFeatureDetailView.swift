@@ -185,13 +185,15 @@ struct WidgetFeatureDetailView: View {
                 .font(.headline)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
+            let hasPhoto = viewModel.photoData != nil
+
             PhotosPicker(
                 selection: $viewModel.selectedPhotoItem,
                 matching: .images
             ) {
                 HStack {
                     Label(
-                        viewModel.photoData == nil ? "Select Photo" : "Change Photo",
+                        hasPhoto ? "Change Photo" : "Select Photo",
                         systemImage: "photo.on.rectangle"
                     )
                     Spacer()
