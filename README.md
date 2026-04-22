@@ -4,9 +4,7 @@ A SwiftUI sample app demonstrating the full range of WidgetKit capabilities on i
 
 ## Screenshots
 
-<video src="Screenshots/WidgetsDemo.mp4" width="300"></video>
-
-<video src="Screenshots/WidgetsPhotoDemo.mp4" width="300"></video>
+![Widgets Demo](Screenshots/WidgetsDemo.gif)
 
 ## Features
 
